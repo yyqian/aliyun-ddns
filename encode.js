@@ -1,11 +1,12 @@
 'use strict';
-let config = require('./config.json');
+const config = require('./config.json');
+const crypto = require('crypto');
 
-let HTTP_METHOD = "GET";
-let alidns = 'https://alidns.aliyuncs.com/';
+const HTTP_METHOD = "GET";
 
+// 参考: https://help.aliyun.com/document_detail/dns/api-reference/call-method/common-parameters.html?spm=5176.docdns/api-reference/call-method/request.6.129.DHgQI9
 // Missing: Signature, Timestamp, SignatureNonce
-let commonParams = {
+const commonParams = {
   Format: 'JSON',
   Version: '2015-01-09',
   AccessKeyId: config.AccessKeyId,
@@ -13,48 +14,70 @@ let commonParams = {
   SignatureVersion: '1.0'
 };
 
-let getRandomInt = function (min, max) {
+const getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-let fillCommonParams = function (reqParams) {
-  Object.keys(commonParams).forEach((x) => {
-    reqParams[x] = commonParams[x];
+const getCombinedParams = function (reqParams) {
+  const combinedParams = {};
+  Object.keys(reqParams).forEach((x) => {
+    combinedParams[x] = reqParams[x];
   });
-  var timestamp = new Date();
-  reqParams["Timestamp"] = timestamp.toISOString();
-  reqParams["SignatureNonce"] = getRandomInt(100000000, 1000000000 - 1);
+  Object.keys(commonParams).forEach((x) => {
+    combinedParams[x] = commonParams[x];
+  });
+  const timestamp = new Date();
+  combinedParams["Timestamp"] = timestamp.toISOString();
+  combinedParams["SignatureNonce"] = getRandomInt(100000000, 1000000000 - 1);
+  return combinedParams;
 };
 
-let getQueryString = function (params) {
-  return Object.keys(params)
-    .sort()
-    .map((x) => {
-      return x + "=" + params[x];
-    })
-    .join("&");
-};
-
-let percentEncode = function (x) {
+const percentEncode = function (x) {
   // encodeURIComponent escapes all characters except the following: alphabetic, decimal digits, - _ . ! ~ * ' ( )
   // 阿里云要求: 对于字符 A-Z、a-z、0-9以及字符“-”、“_”、“.”、“~”不编码
   // 需要手动处理的有: ! * ' ( )
   return encodeURIComponent(x)
+    .replace("!", "%21")
+    .replace("'", "%27")
+    .replace("(", "%28")
+    .replace(")", "%29")
     .replace("+", "%20")
-    .replace("*", "%2A");
+    .replace("*", "%2A")
+    .replace("%7E", "~");
 };
 
-let getStringToSign = function (canonicalizedQueryString) {
+// 参考: https://help.aliyun.com/document_detail/dns/api-reference/call-method/signature.html?spm=5176.docdns/api-reference/call-method/common-parameters.2.1.3RYnvO
+const convertJsonToQueryString = function (params) {
+  return Object.keys(params)
+    .sort()
+    .map((x) => {
+      return percentEncode(x) + "=" + percentEncode(params[x]);
+    })
+    .join("&");
+};
+
+const getStringToSign = function (canonicalizedQueryString) {
   return HTTP_METHOD + '&' + percentEncode('/') + '&' + percentEncode(canonicalizedQueryString);
 };
 
-// testing
-var reqParams = {
-  Action: "UpdateDomainRecord",
-  RecordId: "9999985",
-  RR: "io",
-  Type: "A",
-  Value: "202.106.0.20"
+// Export this
+const getQueryString = function (reqParams) {
+  const combinedParams = getCombinedParams(reqParams);
+  let canonicalizedQueryString = convertJsonToQueryString(combinedParams);
+  const stringToSign = getStringToSign(canonicalizedQueryString);
+  const hmac = crypto.createHmac('sha1', config.AccessKeySecret + '&');
+  hmac.update(stringToSign);
+  const Signature = hmac.digest('base64');
+  canonicalizedQueryString += '&Signature=' + percentEncode(Signature);
+  return canonicalizedQueryString;
 };
-fillCommonParams(reqParams);
-console.log(getStringToSign(getQueryString(reqParams)));
+
+module.exports = {
+  getQueryString: getQueryString,
+  getPath: function (reqParams) {
+    return '/?' + getQueryString(reqParams);
+  },
+  getUrl: function (reqParams) {
+    return 'http://alidns.aliyuncs.com/?' + getQueryString(reqParams);
+  },
+};
