@@ -1,0 +1,19 @@
+{
+  "name": "aliyun-ddns",
+  "version": "1.0.0",
+  "description": "aliyun-ddns",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yyqian/aliyun-ddns.git"
+  },
+  "author": "Yinyin Qian",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yyqian/aliyun-ddns/issues"
+  },
+  "homepage": "https://github.com/yyqian/aliyun-ddns#readme"
+}
