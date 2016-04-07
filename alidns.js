@@ -2,6 +2,7 @@
 const config = require('./config.json');
 const crypto = require('crypto');
 
+const ALIDNS_HOST = 'alidns.aliyuncs.com';
 const HTTP_METHOD = "GET";
 
 // 参考: https://help.aliyun.com/document_detail/dns/api-reference/call-method/common-parameters.html?spm=5176.docdns/api-reference/call-method/request.6.129.DHgQI9
@@ -50,9 +51,7 @@ const percentEncode = function (x) {
 const convertJsonToQueryString = function (params) {
   return Object.keys(params)
     .sort()
-    .map((x) => {
-      return percentEncode(x) + "=" + percentEncode(params[x]);
-    })
+    .map(x => percentEncode(x) + "=" + percentEncode(params[x]))
     .join("&");
 };
 
@@ -72,12 +71,10 @@ const getQueryString = function (reqParams) {
   return canonicalizedQueryString;
 };
 
+
 module.exports = {
   getQueryString: getQueryString,
-  getPath: function (reqParams) {
-    return '/?' + getQueryString(reqParams);
-  },
-  getUrl: function (reqParams) {
-    return 'http://alidns.aliyuncs.com/?' + getQueryString(reqParams);
-  },
+  getPath: reqParams => '/?' + getQueryString(reqParams),
+  getUrl: reqParams => 'http://' + ALIDNS_HOST + '/?' + getQueryString(reqParams),
+  ALIDNS_HOST: ALIDNS_HOST
 };
