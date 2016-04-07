@@ -10,7 +10,7 @@ const getTarget = function (req) {
   return {
     hostname: url.parse(req.url, true).query.hostname,
     ip: url.parse(req.url, true).query.ip
-    || req.headers[config.clientIpHeader]
+    || req.headers[config.clientIpHeader.toLowerCase()]
     || req.connection.remoteAddress
     || req.socket.remoteAddress
     || req.connection.socket.remoteAddress
@@ -102,11 +102,11 @@ http.createServer((req, res) => {
   const parsedUrl = url.parse(req.url, true);
   if (req.method === 'GET' && parsedUrl.pathname === config.path) {
     const target = getTarget(req);
-    console.log(new Date() + ': ' + JSON.stringify(target));
     updateRecord(target, (msg) => {
       if (msg === 'error') {
         res.statusCode = 400;
       }
+      console.log(new Date() + ' | ' + msg + ' | ' + JSON.stringify(target));
       res.end(msg);
     });
   } else {
