@@ -102,6 +102,7 @@ http.createServer((req, res) => {
   const parsedUrl = url.parse(req.url, true);
   if (req.method === 'GET' && parsedUrl.pathname === config.path) {
     const target = getTarget(req);
+    console.log(new Date() + ': ' + JSON.stringify(target));
     updateRecord(target, (msg) => {
       if (msg === 'error') {
         res.statusCode = 400;
