@@ -27,9 +27,17 @@
 - path 是自定义的访问路径, 默认为 `/hack`
 - port 是自定义的服务器端监听的端口
 
-## 客户端调用
+## 客户端手动调用
 
 调用的原理和花生壳类似, 假设在 config.json 中 `path` 属性是默认的 `/hack`, 有两种调用方法:
 
 1. 在客户端调用 `/hack?hostname=foo.bar.com` 来设定 `foo.bar.com` 解析为当前客户端的公网 IP
 2. 在客户端调用 `/hack?hostname=foo.bar.com&ip=xxx.xxx.xxx.xxx` 来设定 `foo.bar.com` 解析为 `xxx.xxx.xxx.xxx`
+
+## 客户端 crontab 定时调用
+
+1. 参照 client.sh 写个 shell script
+2. 让脚本可运行: `chmod 775 client.sh`
+3. 编辑 crontab: `crontab -e`
+4. 添加记录, 让脚本 5 分钟调用一次: `0,5,10,15,20,25,30,35,40,45,50,55 * * * * /path/to/client.sh`
+5. 重启 cron 服务: `sudo service cron restart`
