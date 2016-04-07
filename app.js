@@ -106,7 +106,7 @@ http.createServer((req, res) => {
       if (msg === 'error') {
         res.statusCode = 400;
       }
-      console.log(new Date() + ' | ' + msg + ' | ' + JSON.stringify(target));
+      console.log(new Date() + ': [' + msg + '] ' + JSON.stringify(target));
       res.end(msg);
     });
   } else {
