@@ -2,7 +2,7 @@
 
 利用阿里云解析的 API 实现动态域名解析的功能（类似花生壳）.
 
-没有任何 npm 依赖, 用到的原生的 Node.js 模块有:
+没有任何 npm 依赖, 用到的原生 Node.js 模块有:
 
 - http
 - url
@@ -11,14 +11,13 @@
 ## 使用前提
 
 - 域名是由阿里云/万网托管的
--
 
 ## 服务器端程序部署
 
-1. 填写 config-sample.json 中的内容
-2. 将 config-sample.json 重命名为 config.json
+1. 复制 config-sample.json 并命名为 config.json
+2. 修改 config.json 中的内容, 参数说明见下面
 3. 用 pm2 或其他方式启动 app.js
-4. 进行必要的网路配置（譬如 Nginx 反向代理, 防火墙等）, 确保能在公网中被访问到
+4. 进行必要的网路配置（譬如 Nginx 反向代理, 防火墙等）, 确保应用服务能在公网中被访问到
 
 ## config.json 参数说明
 
@@ -29,7 +28,7 @@
 
 ## 客户端调用
 
-调用的原理和花生壳类似, 有两种调用方法:
+调用的原理和花生壳类似, 假设在 config.json 中 `path` 属性是默认的 `/path`, 有两种调用方法:
 
 1. 在客户端调用 `/hack?hostname=foo.bar.com` 来设定 `foo.bar.com` 解析为当前客户端的公网 IP
 2. 在客户端调用 `/hack?hostname=foo.bar.com&ip=xxx.xxx.xxx.xxx` 来设定 `foo.bar.com` 解析为 `xxx.xxx.xxx.xxx`

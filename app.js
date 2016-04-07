@@ -17,6 +17,11 @@ const getTarget = function (req) {
   }
 };
 
+// 这段代码首先会检查已有的记录
+// 如果记录不存在, 会新建一个解析, 并返回 created
+// 如果记录存在, ip 没变化, 不会更新 ip, 并返回 nochg
+// 如果记录存在, ip 有变化, 会更新 ip, 并返回 updated
+// 如果阿里云端返回 400 错误, 则返回 error
 const updateRecord = function (target, callback) {
   const describeParams = {
     Action: 'DescribeDomainRecords',
@@ -90,6 +95,7 @@ const updateRecord = function (target, callback) {
   }).end();
 };
 
+// 服务器端监听
 http.createServer((req, res) => {
   req.on('error', err => {
     console.error(err);
@@ -99,8 +105,7 @@ http.createServer((req, res) => {
   res.on('error', err => {
     console.error(err);
   });
-  const parsedUrl = url.parse(req.url, true);
-  if (req.method === 'GET' && parsedUrl.pathname === config.path) {
+  if (req.method === 'GET' && url.parse(req.url, true).pathname === config.path) {
     const target = getTarget(req);
     updateRecord(target, (msg) => {
       if (msg === 'error') {
