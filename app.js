@@ -6,11 +6,14 @@ const config = require('./config.json');
 
 // hostname 以 query string 形式传入, 格式为 xx.example.com
 // ip 如果在 query string 中出现, 则设定为该 ip, 否则设定为访问客户端的 ip
-// 这里假设本服务端程序在 nginx 后面, 并且真实 ip 存放在 header 的 X-Real-IP 属性中
 const getTarget = function (req) {
   return {
     hostname: url.parse(req.url, true).query.hostname,
-    ip: url.parse(req.url, true).query.ip || req.headers['X-Real-IP']
+    ip: url.parse(req.url, true).query.ip
+    || req.headers[config.clientIpHeader]
+    || req.connection.remoteAddress
+    || req.socket.remoteAddress
+    || req.connection.socket.remoteAddress
   }
 };
 
@@ -26,6 +29,13 @@ const updateRecord = function (target, callback) {
     Type: 'A',
     Value: target.ip
   };
+  const addParmas = {
+    Action: 'AddDomainRecord',
+    DomainName: describeParams.DomainName,
+    RR: updateParmas.RR,
+    Type: updateParmas.Type,
+    Value: updateParmas.Value
+  };
   // 首先获取域名信息, 目的是获取要更新的域名的 RecordId
   http.request({
     host: alidns.ALIDNS_HOST,
@@ -39,13 +49,15 @@ const updateRecord = function (target, callback) {
         const result = JSON.parse(body);
         // 获取要更新的域名的 RecordId, 并检查是否需要更新
         let shouldUpdate = false;
+        let shouldAdd = true;
         result.DomainRecords.Record
           .filter(record => record.RR === updateParmas.RR)
           .forEach(record => {
+            shouldAdd = false;
             if (record.Value !== updateParmas.Value) {
               shouldUpdate = true;
+              updateParmas.RecordId = record.RecordId;
             }
-            updateParmas.RecordId = record.RecordId;
           });
         if (shouldUpdate) {
           // 更新域名的解析
@@ -55,6 +67,18 @@ const updateRecord = function (target, callback) {
           }, res => {
             if (res.statusCode === 200) {
               callback('updated');
+            } else {
+              callback('error');
+            }
+          }).end();
+        } else if (shouldAdd) {
+          // 增加新的域名解析
+          http.request({
+            host: alidns.ALIDNS_HOST,
+            path: alidns.getPath(addParmas)
+          }, res => {
+            if (res.statusCode === 200) {
+              callback('added');
             } else {
               callback('error');
             }
@@ -76,7 +100,7 @@ http.createServer((req, res) => {
     console.error(err);
   });
   const parsedUrl = url.parse(req.url, true);
-  if (req.method === 'GET' && parsedUrl.pathname === '/update') {
+  if (req.method === 'GET' && parsedUrl.pathname === config.path) {
     const target = getTarget(req);
     updateRecord(target, (msg) => {
       if (msg === 'error') {
