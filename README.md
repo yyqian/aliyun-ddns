@@ -29,7 +29,7 @@
 
 ## 客户端调用
 
-调用的原理和花生壳类似, 假设在 config.json 中 `path` 属性是默认的 `/path`, 有两种调用方法:
+调用的原理和花生壳类似, 假设在 config.json 中 `path` 属性是默认的 `/hack`, 有两种调用方法:
 
 1. 在客户端调用 `/hack?hostname=foo.bar.com` 来设定 `foo.bar.com` 解析为当前客户端的公网 IP
 2. 在客户端调用 `/hack?hostname=foo.bar.com&ip=xxx.xxx.xxx.xxx` 来设定 `foo.bar.com` 解析为 `xxx.xxx.xxx.xxx`
