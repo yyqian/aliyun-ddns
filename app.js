@@ -6,7 +6,7 @@ const config = require('./config.json');
 
 // hostname 以 query string 形式传入, 格式为 xx.example.com
 // ip 如果在 query string 中出现, 则设定为该 ip, 否则设定为访问客户端的 ip
-const getTarget = function (req) {
+const getTarget = req => {
   return {
     hostname: url.parse(req.url, true).query.hostname,
     ip: url.parse(req.url, true).query.ip
@@ -14,7 +14,7 @@ const getTarget = function (req) {
     || req.connection.remoteAddress
     || req.socket.remoteAddress
     || req.connection.socket.remoteAddress
-  }
+  };
 };
 
 // 这段代码首先会检查已有的记录
@@ -22,21 +22,25 @@ const getTarget = function (req) {
 // 如果记录存在, ip 没变化, 不会更新 ip, 并返回 nochg
 // 如果记录存在, ip 有变化, 会更新 ip, 并返回 updated
 // 如果阿里云端返回 400 错误, 则返回 error
-const updateRecord = function (target, callback) {
-  const describeParams = {
-    Action: 'DescribeDomainRecords',
-    DomainName: target.hostname.split('.').slice(1).join('.')
+const updateRecord = (target, callback) => {
+  const ip = target.ip;
+  const subDomain = target.hostname;
+  const domainName = subDomain.split('.').slice(-2).join('.');
+  const rr = subDomain.split('.').slice(0, -2).join('.');
+  const describeSubParams = {
+    Action: 'DescribeSubDomainRecords',
+    SubDomain: subDomain
   };
   const updateParmas = {
     Action: 'UpdateDomainRecord',
     RecordId: '',
-    RR: target.hostname.split('.')[0],
+    RR: rr,
     Type: 'A',
-    Value: target.ip
+    Value: ip
   };
   const addParmas = {
     Action: 'AddDomainRecord',
-    DomainName: describeParams.DomainName,
+    DomainName: domainName,
     RR: updateParmas.RR,
     Type: updateParmas.Type,
     Value: updateParmas.Value
@@ -44,7 +48,7 @@ const updateRecord = function (target, callback) {
   // 首先获取域名信息, 目的是获取要更新的域名的 RecordId
   http.request({
     host: alidns.ALIDNS_HOST,
-    path: alidns.getPath(describeParams)
+    path: alidns.getPath(describeSubParams)
   }, res => {
     let body = [];
     res
