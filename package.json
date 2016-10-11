@@ -1,10 +1,10 @@
 {
   "name": "aliyun-ddns",
   "version": "1.0.0",
-  "description": "aliyun-ddns",
+  "description": "利用阿里云解析的 API 实现动态域名解析的功能（类似花生壳）",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "NODE_ENV=production node app.js"
   },
   "repository": {
     "type": "git",
