@@ -17,7 +17,7 @@
 
 1. 复制 config-sample.json 并命名为 config.json
 2. 修改 config.json 中的内容, 参数说明见下面
-3. 用 pm2 或其他方式启动 app.js
+3. 用 pm2 或其他方式启动 app.js（已添加 Docker 启动方式，参照 docker-run.sh 脚本）
 4. 进行必要的网路配置（譬如 Nginx 反向代理, 防火墙等）, 确保应用服务能在公网中被访问到
 
 ## config.json 参数说明
