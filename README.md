@@ -1,12 +1,17 @@
 # aliyun-ddns
 
-利用阿里云解析的 API 实现动态域名解析的功能（类似花生壳）.
+利用阿里云解析的 API 实现动态域名解析的功能（类似花生壳，例如定时地将自己的域名解析更新为家中当前的 IP 地址）。
 
 没有任何 npm 依赖, 用到的原生 Node.js 模块有:
 
 - http
 - url
 - crypto
+
+## 使用场景
+
+- 部署本服务在阿里云、AWS 等云服务器上
+- 在本地（例如家里的 NAS、路由器、树莓派等）设定定时任务：访问服务端，以更新当前本地的 IP 地址
 
 ## 使用前提
 
@@ -17,7 +22,7 @@
 
 1. 复制 config-sample.json 并命名为 config.json
 2. 修改 config.json 中的内容, 参数说明见下面
-3. 用 pm2 或其他方式启动 app.js（已添加 Docker 启动方式，参照 docker-run.sh 脚本）
+3. 用 pm2 或其他方式启动 app.js（已添加 Docker 启动方式，参照 Dockerfile 和 docker-run.sh 脚本）
 4. 进行必要的网路配置（譬如 Nginx 反向代理, 防火墙等）, 确保应用服务能在公网中被访问到
 
 ## config.json 参数说明
@@ -41,3 +46,7 @@
 3. 编辑 crontab: `crontab -e`
 4. 添加记录, 让脚本 5 分钟调用一次: `0,5,10,15,20,25,30,35,40,45,50,55 * * * * /path/to/client.sh`
 5. 重启 cron 服务: `sudo service cron restart`
+
+## 安全事项
+
+由于本服务的 API 未加任何身份验证措施，相当于是把阿里云解析的修改、添加 API 暴露在了外界，所以一定要注意入口地址的隐藏。
