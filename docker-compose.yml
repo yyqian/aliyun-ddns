@@ -1,0 +1,7 @@
+version: '2'
+services:
+  aliyun-ddns:
+    build: .
+    ports:
+      - 8080:8080
+    restart: always
