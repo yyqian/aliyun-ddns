@@ -11,7 +11,7 @@
     "url": "git+https://github.com/yyqian/aliyun-ddns.git"
   },
   "author": "Yinyin Qian",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/yyqian/aliyun-ddns/issues"
   },
