@@ -1,7 +1,5 @@
 {
   "AccessKeyId": "",
   "AccessKeySecret": "",
-  "clientIpHeader": "X-Real-IP",
-  "path": "/hack",
-  "port": 8080
+  "hostname": "foo.bar.com"
 }
