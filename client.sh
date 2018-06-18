@@ -1,2 +1,3 @@
 #!/bin/bash
-node app.js > /tmp/ddns.log
+cd /home/pi/repo/aliyun-ddns
+nodejs app.js > /tmp/ddns.log
