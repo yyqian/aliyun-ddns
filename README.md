@@ -37,7 +37,7 @@ server-mode 适合一些客户端无法安装 Node.js 环境的场景（例如�
 ### client-mode/config.json 参数说明
 
 - AccessKeyId 和 AccessKeySecret 在阿里云的控制台获取, 注意保密
-- hostname 是待更新的 DNS 域名
+- hostnames 是待更新的多个 DNS (子)域名
 
 ----------------------------------------------------------------------------------
 
