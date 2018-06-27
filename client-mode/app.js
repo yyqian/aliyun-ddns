@@ -92,13 +92,16 @@ function main() {
             console.log(new Date() + ': [noip]');
             return;
         }
-        let target = {
-            hostname: config.hostname,
-            ip: pubIp
-        };
-        alidns.updateRecord(target, (msg) => {
-            console.log(new Date() + ': [' + msg + '] ' + JSON.stringify(target));
-        });
+        let hostnames = config.hostnames;
+        for (let hostname of hostnames) {
+            let target = {
+                hostname: hostname,
+                ip: pubIp
+            };
+            alidns.updateRecord(target, (msg) => {
+                console.log(new Date() + ': [' + msg + '] ' + JSON.stringify(target));
+            });
+        }
     });
 }
 

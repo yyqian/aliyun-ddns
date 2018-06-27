@@ -1,5 +1,5 @@
 {
   "AccessKeyId": "",
   "AccessKeySecret": "",
-  "hostname": "foo.bar.com"
+  "hostnames": ["a.foobar.com", "b.foobar.com", "c.foobar.com"]
 }
