@@ -1,4 +1,4 @@
-# aliyun-ddns 
+# aliyun-ddns <a href="https://996.icu"><img src="https://img.shields.io/badge/link-996.icu-red.svg" alt="996.icu" /></a>
 
 利用阿里云解析的 API 实现动态域名解析的功能（类似花生壳，例如定时地将自己的域名解析更新为家中当前的 IP 地址）。
 
@@ -15,7 +15,7 @@ server-mode 适合一些客户端无法安装 Node.js 环境的场景（例如�
 
 ## License
 
-MIT & [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
+[![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
 
 ## 使用前提
 
@@ -85,4 +85,3 @@ MIT & [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](htt
 
 由于在 server-mode 中，服务端暴露的 API 未加任何身份验证措施，相当于是把阿里云解析的修改、添加 API 暴露在了外界，所以一定要注意入口地址的隐藏。
 
-<a href="https://996.icu"><img src="https://img.shields.io/badge/link-996.icu-red.svg" alt="996.icu" /></a>
