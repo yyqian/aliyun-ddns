@@ -1,4 +1,4 @@
-# aliyun-ddns <a href="https://996.icu"><img src="https://img.shields.io/badge/link-996.icu-red.svg" alt="996.icu" /></a>
+# aliyun-ddns
 
 利用阿里云解析的 API 实现动态域名解析的功能（类似花生壳，例如定时地将自己的域名解析更新为家中当前的 IP 地址）。
 
@@ -9,7 +9,7 @@
 - client-mode，这种模式下只需要在客户端定时执行一个 Node.js 程序，当前地址的公网 IP 是借助访问公共的 API 来获取的
 - server-mode，这种模式需要在服务端部署一个 Node.js 程序，并且在客户端定时请求服务端以使得服务端获知当前客户端所在地址的公网 IP
 
-client-mode 是最近新开发的，推荐使用该模式，部署更为简单，无需云服务器资源，但要求客户端有 Node.js 的执行环境。
+client-mode 推荐使用该模式，部署更为简单，无需云服务器资源，但要求客户端有 Node.js 的执行环境。
 
 server-mode 适合一些客户端无法安装 Node.js 环境的场景（例如路由器）
 
