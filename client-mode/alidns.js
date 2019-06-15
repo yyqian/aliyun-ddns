@@ -128,7 +128,7 @@ const updateRecord = (target, callback) => {
         let shouldUpdate = false;
         let shouldAdd = true;
         result.DomainRecords.Record
-          .filter(record => record.RR === updateParmas.RR)
+          .filter(record => record.RR === updateParmas.RR && record.Type === updateParmas.Type)
           .forEach(record => {
             shouldAdd = false;
             if (record.Value !== updateParmas.Value) {
