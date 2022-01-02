@@ -86,7 +86,7 @@ const getPath = function (reqParams) {
   return '/?' + getQueryString(reqParams);
 }
 
-const subDomainLevel = function (subDomain) {
+const SubDomainLevel = function (subDomain) {
   var level = 2
   tldRoot = subDomain.split('.').slice(-1).join('.');
   if (tldRoot === 'cn') {
@@ -106,7 +106,7 @@ const subDomainLevel = function (subDomain) {
 const updateRecord = (target, callback) => {
   const ip = target.ip;
   const subDomain = target.hostname;
-  const subDomainLevel = subDomainLevel(subDomain);
+  const subDomainLevel = SubDomainLevel(subDomain);
   const domainName = subDomain.split('.').slice(-subDomainLevel).join('.');
   const rr = subDomain.split('.').slice(0, -subDomainLevel).join('.');
   const describeSubParams = {
