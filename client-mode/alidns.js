@@ -88,9 +88,9 @@ const getPath = function (reqParams) {
 
 const SubDomainLevel = function (subDomain) {
   var level = 2
-  tldRoot = subDomain.split('.').slice(-1).join('.');
+  const tldRoot = subDomain.split('.').slice(-1).join('.');
   if (tldRoot === 'cn') {
-    subroot = subDomain.split('.').slice(-2).join('.');
+    const subroot = subDomain.split('.').slice(-2).join('.');
     if (cn_subs.indexOf(subroot) >= 0) {
       level = 3
     }
