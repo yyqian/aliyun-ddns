@@ -2,6 +2,7 @@
 const http = require('http');
 const config = require('./config.json');
 const crypto = require('crypto');
+const cn_subs = require('./cn_subs.json');
 
 const ALIDNS_HOST = 'alidns.aliyuncs.com';
 const HTTP_METHOD = "GET";
@@ -85,6 +86,18 @@ const getPath = function (reqParams) {
   return '/?' + getQueryString(reqParams);
 }
 
+const SubDomainLevel = function (subDomain) {
+  var level = 2
+  const tldRoot = subDomain.split('.').slice(-1).join('.');
+  if (tldRoot === 'cn') {
+    const subroot = subDomain.split('.').slice(-2).join('.');
+    if (cn_subs.indexOf(subroot) >= 0) {
+      level = 3
+    }
+  }
+  return level
+}
+
 // 这段代码首先会检查已有的记录
 // 如果记录不存在, 会新建一个解析, 并返回 created
 // 如果记录存在, ip 没变化, 不会更新 ip, 并返回 nochg
@@ -93,8 +106,9 @@ const getPath = function (reqParams) {
 const updateRecord = (target, callback) => {
   const ip = target.ip;
   const subDomain = target.hostname;
-  const domainName = subDomain.split('.').slice(-2).join('.');
-  const rr = subDomain.split('.').slice(0, -2).join('.');
+  const subDomainLevel = SubDomainLevel(subDomain);
+  const domainName = subDomain.split('.').slice(-subDomainLevel).join('.');
+  const rr = subDomain.split('.').slice(0, -subDomainLevel).join('.');
   const describeSubParams = {
     Action: 'DescribeSubDomainRecords',
     SubDomain: subDomain
