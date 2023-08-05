@@ -62,7 +62,7 @@ server-mode 适合一些客户端无法安装 Node.js 环境的场景（例如�
 ### config.json 参数说明
 
 - AccessKeyId 和 AccessKeySecret 在阿里云的控制台获取, 注意保密
-- clientIpHeader 属性和反向代理有关（例如在 Nginx 后面）, 用于从 header 中获取客户端的 IP，如果无反响代理，可以不填
+- clientIpHeader 属性和反向代理有关（例如在 Nginx 后面）, 用于从 header 中获取客户端的 IP，如果无反向代理，可以不填
 - path 是自定义的访问路径, 默认为 `/hack`
 - port 是自定义的服务器端监听的端口
 
